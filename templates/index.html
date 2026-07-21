@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tetris – Classic Block Puzzle Game</title>
+  <meta name="description" content="Play a fully-featured, modern Tetris game in your browser. Built with Go and HTML5 Canvas." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+
+  <!-- ════════════════════════════════════════════════
+       PAUSE OVERLAY
+  ════════════════════════════════════════════════ -->
+  <div id="pause-overlay" class="overlay hidden" aria-live="polite" role="dialog" aria-label="Game Paused">
+    <div class="overlay-card">
+      <h2 class="overlay-title">⏸ Paused</h2>
+      <p class="overlay-sub">Press <kbd>P</kbd> to resume</p>
+      <button id="btn-resume" class="btn btn-primary" aria-label="Resume Game">Resume</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       GAME OVER OVERLAY
+  ════════════════════════════════════════════════ -->
+  <div id="gameover-overlay" class="overlay hidden" aria-live="assertive" role="dialog" aria-label="Game Over">
+    <div class="overlay-card">
+      <h2 class="overlay-title">💀 Game Over</h2>
+      <p class="overlay-sub" id="final-score-text">Score: 0</p>
+      <p class="overlay-sub" id="final-level-text">Level: 1</p>
+
+      <!-- Name submission for leaderboard -->
+      <div id="name-submit-section">
+        <input id="player-name" type="text" maxlength="32" placeholder="Enter your name…" class="name-input" aria-label="Player name for leaderboard" />
+        <button id="btn-submit-score" class="btn btn-accent" aria-label="Submit score to leaderboard">Submit Score</button>
+      </div>
+      <p id="submit-feedback" class="feedback-text hidden"></p>
+
+      <button id="btn-restart-over" class="btn btn-primary mt-16" aria-label="Play Again">▶ Play Again</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       LEADERBOARD MODAL
+  ════════════════════════════════════════════════ -->
+  <div id="leaderboard-overlay" class="overlay hidden" role="dialog" aria-label="Leaderboard">
+    <div class="overlay-card leaderboard-card">
+      <h2 class="overlay-title">🏆 Leaderboard</h2>
+      <table id="leaderboard-table" class="lb-table" aria-label="Top scores">
+        <thead>
+          <tr><th>#</th><th>Name</th><th>Score</th><th>Level</th><th>Lines</th></tr>
+        </thead>
+        <tbody id="leaderboard-body">
+          <tr><td colspan="5" class="lb-empty">No entries yet – be the first!</td></tr>
+        </tbody>
+      </table>
+      <button id="btn-close-lb" class="btn btn-secondary mt-16" aria-label="Close leaderboard">Close</button>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       MAIN LAYOUT
+  ════════════════════════════════════════════════ -->
+  <div id="app">
+
+    <!-- LEFT PANEL -->
+    <aside class="panel panel-left" aria-label="Game Information">
+
+      <div class="logo" aria-label="Tetris Game">
+        <span class="logo-text">TETRIS</span>
+        <span class="logo-dot">.</span>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-group">
+        <div class="stat-card">
+          <span class="stat-label">Score</span>
+          <span class="stat-value" id="score-display">0</span>
+        </div>
+        <div class="stat-card highlight">
+          <span class="stat-label">High Score</span>
+          <span class="stat-value" id="high-score-display">0</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Level</span>
+          <span class="stat-value" id="level-display">1</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-label">Lines</span>
+          <span class="stat-value" id="lines-display">0</span>
+        </div>
+      </div>
+
+      <!-- Hold Piece -->
+      <div class="preview-box">
+        <span class="preview-label">Hold</span>
+        <canvas id="hold-canvas" width="120" height="120" aria-label="Hold piece preview"></canvas>
+      </div>
+
+      <!-- FPS -->
+      <div class="stat-card fps-card" title="Frames Per Second">
+        <span class="stat-label">FPS</span>
+        <span class="stat-value stat-small" id="fps-display">60</span>
+      </div>
+
+    </aside>
+
+    <!-- GAME CANVAS -->
+    <main class="game-area" aria-label="Tetris Game Board">
+      <canvas id="game-canvas" aria-label="Tetris game board, 10 columns by 20 rows"></canvas>
+    </main>
+
+    <!-- RIGHT PANEL -->
+    <aside class="panel panel-right" aria-label="Controls and Next Piece">
+
+      <!-- Next Piece -->
+      <div class="preview-box">
+        <span class="preview-label">Next</span>
+        <canvas id="next-canvas" width="120" height="120" aria-label="Next piece preview"></canvas>
+      </div>
+
+      <!-- Controls reference -->
+      <div class="controls-ref">
+        <span class="controls-title">Controls</span>
+        <ul class="controls-list" aria-label="Keyboard controls">
+          <li><kbd>←</kbd><kbd>→</kbd> Move</li>
+          <li><kbd>↑</kbd> Rotate</li>
+          <li><kbd>↓</kbd> Soft Drop</li>
+          <li><kbd>Space</kbd> Hard Drop</li>
+          <li><kbd>C</kbd> Hold</li>
+          <li><kbd>P</kbd> Pause</li>
+          <li><kbd>R</kbd> Restart</li>
+        </ul>
+      </div>
+
+      <!-- Combo display -->
+      <div id="combo-display" class="combo hidden" aria-live="polite">
+        <span id="combo-count">0</span>x COMBO!
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="btn-group">
+        <button id="btn-pause"       class="btn btn-secondary" aria-label="Pause game">⏸ Pause</button>
+        <button id="btn-restart"     class="btn btn-secondary" aria-label="Restart game">↺ Restart</button>
+        <button id="btn-leaderboard" class="btn btn-secondary" aria-label="View leaderboard">🏆 Board</button>
+        <button id="btn-fullscreen"  class="btn btn-secondary" aria-label="Toggle fullscreen">⛶ Fullscreen</button>
+        <button id="btn-sound"       class="btn btn-secondary" aria-label="Toggle sound">🔊 Sound</button>
+        <button id="btn-theme"       class="btn btn-secondary" aria-label="Switch theme">🎨 Theme</button>
+      </div>
+
+    </aside>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+       GAME SCRIPT
+  ════════════════════════════════════════════════ -->
+  <script src="/static/js/game.js" defer></script>
+</body>
+</html>

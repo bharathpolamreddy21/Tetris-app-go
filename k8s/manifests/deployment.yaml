@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tetris-deployment
+  namespace: tetris-ns
+  labels:
+    app: tetris-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels: 
+      app: tetris-app
+  template:
+    metadata:
+      labels:
+        app: tetris-app
+    spec:
+      containers:
+        - name: tetris-app
+          image: bharathpolamreddy/tetris-go-app:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
