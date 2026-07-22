@@ -31,10 +31,27 @@ const ROWS       = 20;
 const BLOCK_SIZE = 32;   // px – will be scaled for viewport
 
 /** Tetromino shapes, each defined as (row, col) offsets from pivot. */
+/** Naruto-themed emoji per piece type. */
+const BLOCK_EMOJIS = {
+  I: '🍜',  // Ichiraku Ramen – Naruto's obsession
+  O: '🌀',  // Rasengan
+  T: '👁️',  // Sharingan
+  S: '🍃',  // Leaf Village symbol
+  Z: '🔥',  // Katon – Fire Style
+  J: '⚡',  // Chidori / Lightning Blade
+  L: '📜',  // Jutsu Scroll
+};
+
+/**
+ * Maps each piece colour → its type so the board renderer can look up
+ * the emoji without storing the type separately in the grid.
+ */
+const COLOR_TO_TYPE = {};
+
 const TETROMINOES = {
   I: {
-    color: '#22d3ee',
-    shadow: '#0e7490',
+    color: '#FF6B00',  // Naruto's orange jumpsuit
+    shadow: '#7A3200',
     shapes: [
       [[0,0],[0,1],[0,2],[0,3]],
       [[0,0],[1,0],[2,0],[3,0]],
@@ -44,16 +61,16 @@ const TETROMINOES = {
     offset: [[0,-1],[1,0],[0,-1],[1,0]],  // pivot correction per rotation
   },
   O: {
-    color: '#fbbf24',
-    shadow: '#92400e',
+    color: '#FFD700',  // Kyuubi / Nine-Tails chakra gold
+    shadow: '#7A6000',
     shapes: [
       [[0,0],[0,1],[1,0],[1,1]],
     ],
     offset: [[0,0],[0,0],[0,0],[0,0]],
   },
   T: {
-    color: '#a855f7',
-    shadow: '#6b21a8',
+    color: '#CC0000',  // Sharingan red
+    shadow: '#600000',
     shapes: [
       [[0,1],[1,0],[1,1],[1,2]],
       [[0,0],[1,0],[2,0],[1,1]],  // actually wrong but we use SRS below
@@ -63,8 +80,8 @@ const TETROMINOES = {
     offset: [[0,0],[0,0],[0,0],[0,0]],
   },
   S: {
-    color: '#4ade80',
-    shadow: '#166534',
+    color: '#00AA44',  // Konoha leaf green
+    shadow: '#005522',
     shapes: [
       [[0,1],[0,2],[1,0],[1,1]],
       [[0,0],[1,0],[1,1],[2,1]],
@@ -74,8 +91,8 @@ const TETROMINOES = {
     offset: [[0,0],[0,0],[0,0],[0,0]],
   },
   Z: {
-    color: '#f87171',
-    shadow: '#991b1b',
+    color: '#FF4500',  // Katon fire orange-red
+    shadow: '#7A2000',
     shapes: [
       [[0,0],[0,1],[1,1],[1,2]],
       [[0,1],[1,0],[1,1],[2,0]],
@@ -85,8 +102,8 @@ const TETROMINOES = {
     offset: [[0,0],[0,0],[0,0],[0,0]],
   },
   J: {
-    color: '#3b82f6',
-    shadow: '#1e3a8a',
+    color: '#1E90FF',  // Chidori lightning blue
+    shadow: '#0A3560',
     shapes: [
       [[0,0],[1,0],[1,1],[1,2]],
       [[0,0],[0,1],[1,0],[2,0]],
@@ -96,8 +113,8 @@ const TETROMINOES = {
     offset: [[0,0],[0,0],[0,0],[0,0]],
   },
   L: {
-    color: '#fb923c',
-    shadow: '#7c2d12',
+    color: '#9B59B6',  // Sage / Orochimaru purple
+    shadow: '#4A2060',
     shapes: [
       [[0,2],[1,0],[1,1],[1,2]],
       [[0,0],[1,0],[2,0],[2,1]],
@@ -107,6 +124,9 @@ const TETROMINOES = {
     offset: [[0,0],[0,0],[0,0],[0,0]],
   },
 };
+
+// Populate COLOR_TO_TYPE lookup after TETROMINOES is defined.
+Object.keys(TETROMINOES).forEach(t => { COLOR_TO_TYPE[TETROMINOES[t].color] = t; });
 
 /** SRS wall kick data (standard rotation system). */
 const SRS_KICKS = {
@@ -817,38 +837,52 @@ class Renderer {
   }
 
   /** Draw a single block with neon glow effect. */
-  _drawBlock(ctx, x, y, size, color, shadowColor, alpha = 1) {
+  /**
+   * Draw a single block with neon glow and an optional Naruto emoji icon.
+   * @param {string} [emoji] – Optional emoji to stamp on the block face.
+   */
+  _drawBlock(ctx, x, y, size, color, shadowColor, alpha = 1, emoji = '') {
     ctx.save();
     ctx.globalAlpha = alpha;
 
-    // Shadow / glow
+    // Outer glow
     ctx.shadowColor = color;
-    ctx.shadowBlur  = 10;
+    ctx.shadowBlur  = 14;
 
-    // Gradient face
+    // Gradient face (top-left lighter → bottom-right base colour)
     const grad = ctx.createLinearGradient(x, y, x + size, y + size);
-    grad.addColorStop(0, lighten(color, 40));
+    grad.addColorStop(0, lighten(color, 50));
     grad.addColorStop(1, color);
     ctx.fillStyle = grad;
     ctx.fillRect(x + 1, y + 1, size - 2, size - 2);
 
-    // Top/left highlight
+    // Top/left highlight bevel
     ctx.shadowBlur  = 0;
-    ctx.strokeStyle = lighten(color, 60);
-    ctx.lineWidth   = 1;
+    ctx.strokeStyle = lighten(color, 70);
+    ctx.lineWidth   = 1.5;
     ctx.beginPath();
     ctx.moveTo(x + 1, y + size - 1);
     ctx.lineTo(x + 1, y + 1);
     ctx.lineTo(x + size - 1, y + 1);
     ctx.stroke();
 
-    // Bottom/right shadow
-    ctx.strokeStyle = darken(color, 40);
+    // Bottom/right shadow bevel
+    ctx.strokeStyle = darken(color, 50);
     ctx.beginPath();
     ctx.moveTo(x + size - 1, y + 1);
     ctx.lineTo(x + size - 1, y + size - 1);
     ctx.lineTo(x + 1, y + size - 1);
     ctx.stroke();
+
+    // Naruto emoji icon – only draw if block is large enough to be readable
+    if (emoji && size >= 22) {
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = alpha * 0.92;
+      ctx.font = `${Math.floor(size * 0.58)}px serif`;
+      ctx.textAlign    = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(emoji, x + size / 2, y + size / 2 + 1);
+    }
 
     ctx.restore();
   }
@@ -863,15 +897,30 @@ class Renderer {
     // Background
     ctx.clearRect(0, 0, w, h);
 
-    // Grid background
+    // Naruto-themed grid background – deep warm dark
     const bgGrad = ctx.createLinearGradient(0, 0, 0, h);
-    bgGrad.addColorStop(0, '#0f0f20');
-    bgGrad.addColorStop(1, '#050510');
+    bgGrad.addColorStop(0, '#120800');
+    bgGrad.addColorStop(1, '#050200');
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, w, h);
 
-    // Faint grid lines
-    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    // Subtle chakra-pattern kanji watermark
+    ctx.save();
+    ctx.globalAlpha = 0.03;
+    ctx.fillStyle   = '#FF6B00';
+    ctx.font        = `${bs * 2}px serif`;
+    ctx.textAlign   = 'center';
+    ctx.textBaseline = 'middle';
+    const kanji = ['忍', '力', '火', '風', '雷', '水', '土'];
+    for (let r = 0; r < ROWS; r += 4) {
+      for (let c = 0; c < COLS; c += 3) {
+        ctx.fillText(kanji[(r + c) % kanji.length], (c + 1) * bs, (r + 1) * bs);
+      }
+    }
+    ctx.restore();
+
+    // Faint orange-tinted grid lines
+    ctx.strokeStyle = 'rgba(255,107,0,0.06)';
     ctx.lineWidth   = 0.5;
     for (let r = 0; r <= ROWS; r++) {
       ctx.beginPath();
@@ -886,12 +935,14 @@ class Renderer {
       ctx.stroke();
     }
 
-    // Locked board cells
+    // Locked board cells – look up emoji from colour
     for (let r = 0; r < ROWS; r++) {
       for (let c = 0; c < COLS; c++) {
         const color = state.board.grid[r][c];
         if (color) {
-          this._drawBlock(ctx, c * bs, r * bs, bs, color, darken(color, 30));
+          const type  = COLOR_TO_TYPE[color];
+          const emoji = BLOCK_EMOJIS[type] || '';
+          this._drawBlock(ctx, c * bs, r * bs, bs, color, darken(color, 30), 1, emoji);
         }
       }
     }
@@ -912,11 +963,12 @@ class Renderer {
       });
     }
 
-    // Active piece
+    // Active piece – draw with its Naruto emoji
     if (!state.over) {
+      const curEmoji = BLOCK_EMOJIS[state.current.type] || '';
       state.current.cells().forEach(([r, c]) => {
         if (r >= 0) {
-          this._drawBlock(ctx, c * bs, r * bs, bs, state.current.color, state.current.shadow);
+          this._drawBlock(ctx, c * bs, r * bs, bs, state.current.color, state.current.shadow, 1, curEmoji);
         }
       });
     }
@@ -934,8 +986,8 @@ class Renderer {
   _renderPreview(ctx, canvas, pieceOrNull) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Dark background
-    ctx.fillStyle = '#0f0f20';
+    // Naruto dark warm background for preview canvases
+    ctx.fillStyle = '#120800';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     if (!pieceOrNull) return;
@@ -959,10 +1011,11 @@ class Renderer {
     const offX = (canvas.width  - cols * bs) / 2;
     const offY = (canvas.height - rows * bs) / 2;
 
+    const prevEmoji = BLOCK_EMOJIS[type] || '';
     shape.forEach(([r, c]) => {
       const x = offX + (c - minC) * bs;
       const y = offY + (r - minR) * bs;
-      this._drawBlock(ctx, x, y, bs, def.color, def.shadow);
+      this._drawBlock(ctx, x, y, bs, def.color, def.shadow, 1, prevEmoji);
     });
   }
 }
