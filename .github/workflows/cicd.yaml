@@ -87,6 +87,6 @@ jobs:
       run: |
         git config --global user.email "bharathpolamreddy321@gmail.com"
         git config --global user.name "Bharath polamreddy"
-        git add helm/go-web-app-chart/values.yaml
+        git add helm/tetris-app-chart/values.yaml
         git commit -m "Update tag in Helm chart"
         git push
