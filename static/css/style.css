@@ -1,66 +1,58 @@
 /* ============================================================
-   Tetris — Naruto Ninja Theme 🍜
-   Orange chakra, Sharingan red, Kyuubi gold, Konoha dark.
+   Tetris — NARUTO NINJA THEME 🍜🔥
+   Ultra dramatic orange fire, Sharingan red, Konoha scroll look.
    ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap');
 
 /* ── CSS Custom Properties ──────────────────────────────────── */
 :root {
-  /* Naruto dark palette */
-  --bg-deep:        #060300;
-  --bg-panel:       #0e0600;
-  --bg-card:        #1a0d00;
-  --bg-card-hover:  #261300;
+  --bg-deep:        #080400;
+  --bg-panel:       #100800;
+  --bg-card:        #1e0e00;
+  --bg-card-hover:  #2e1600;
 
-  --border-subtle:  rgba(255, 107, 0, 0.12);
-  --border-glow:    rgba(255, 107, 0, 0.5);
+  --border-subtle:  rgba(255, 120, 0, 0.2);
+  --border-glow:    rgba(255, 120, 0, 0.6);
 
-  --text-primary:   #ffe8cc;
-  --text-secondary: #cc8840;
-  --text-muted:     #6b4020;
+  --text-primary:   #ffe9cc;
+  --text-secondary: #dd8830;
+  --text-muted:     #7a4a18;
 
-  /* Naruto orange accent */
   --accent:         #FF6B00;
-  --accent-bright:  #FF9A40;
-  --accent-glow:    rgba(255, 107, 0, 0.4);
+  --accent-bright:  #FFA040;
+  --accent-glow:    rgba(255, 107, 0, 0.5);
 
-  /* Secondary accents */
-  --neon-cyan:      #FFD700;   /* Kyuubi gold */
-  --neon-pink:      #CC0000;   /* Sharingan red */
-  --neon-yellow:    #FFD700;
-  --neon-green:     #00AA44;   /* Leaf village green */
-  --neon-orange:    #FF4500;
+  --neon-gold:      #FFD700;
+  --neon-red:       #FF2200;
+  --neon-green:     #00CC44;
+  --neon-blue:      #1E90FF;
 
-  /* Sizing */
   --panel-width:    200px;
   --panel-gap:      20px;
   --border-radius:  10px;
   --border-radius-lg: 16px;
-
-  /* Animation */
   --transition-fast: 0.15s ease;
   --transition-med:  0.3s ease;
 }
 
-/* ── Reset & Base ───────────────────────────────────────────── */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
+/* ── Reset ──────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { height: 100%; font-size: 16px; }
 
+/* ── Body — rich Naruto scroll background ───────────────────── */
 body {
   min-height: 100%;
-  background: var(--bg-deep);
+  font-family: 'Inter', system-ui, sans-serif;
   color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow: hidden;
 
-  /* Subtle fire-pattern background */
+  /* Deep dark warm background with orange fire radials */
+  background-color: #060200;
   background-image:
-    radial-gradient(ellipse at 20% 80%, rgba(255,69,0,0.06) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(255,107,0,0.05) 0%, transparent 50%);
+    radial-gradient(ellipse 60% 40% at 10% 90%, rgba(255, 80, 0, 0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 90% 10%, rgba(255, 180, 0, 0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 60% at 50% 50%, rgba(180, 40, 0, 0.08) 0%, transparent 70%);
 }
 
 /* ── App Layout ─────────────────────────────────────────────── */
@@ -78,167 +70,144 @@ body {
   width: var(--panel-width);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 11px;
   padding-top: 8px;
   flex-shrink: 0;
 }
 
-/* ── Logo ───────────────────────────────────────────────────── */
+/* ── LOGO — fire gradient + kanji ───────────────────────────── */
 .logo {
   text-align: center;
-  padding: 6px 0 2px;
-  position: relative;
-}
-
-.logo::before {
-  content: '忍';
-  position: absolute;
-  top: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 2.4rem;
-  opacity: 0.06;
-  color: var(--accent);
-  pointer-events: none;
+  padding: 10px 4px 4px;
+  background: linear-gradient(180deg, rgba(255,107,0,0.12) 0%, transparent 100%);
+  border-radius: var(--border-radius);
+  border: 1px solid rgba(255,107,0,0.18);
 }
 
 .logo-text {
+  display: block;
   font-family: 'Orbitron', monospace;
   font-weight: 900;
-  font-size: 1.5rem;
-  letter-spacing: 5px;
-  background: linear-gradient(135deg, #FF6B00, #FFD700, #FF4500);
+  font-size: 1.55rem;
+  letter-spacing: 6px;
+  /* Bright orange-to-gold fire gradient */
+  background: linear-gradient(135deg, #FF4500 0%, #FF8C00 40%, #FFD700 70%, #FF4500 100%);
+  background-size: 200% auto;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 10px rgba(255,107,0,0.6));
-  animation: logoFlicker 4s ease-in-out infinite;
+  animation: fireText 3s linear infinite;
+  filter: drop-shadow(0 0 12px rgba(255, 107, 0, 0.8));
 }
 
-@keyframes logoFlicker {
-  0%, 100% { filter: drop-shadow(0 0 8px rgba(255,107,0,0.6)); }
-  50%       { filter: drop-shadow(0 0 16px rgba(255,200,0,0.9)); }
+@keyframes fireText {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
 .logo-dot {
-  color: #CC0000;
-  font-size: 2rem;
-  font-weight: 900;
-  -webkit-text-fill-color: #CC0000;
-  filter: drop-shadow(0 0 8px #CC0000);
-  animation: sharinganSpin 3s linear infinite;
+  font-size: 1.4rem;
   display: inline-block;
+  /* override transparent fill from parent */
+  -webkit-text-fill-color: initial;
+  animation: sharinganPulse 1.5s ease-in-out infinite;
+  filter: drop-shadow(0 0 8px #CC0000);
 }
 
-@keyframes sharinganSpin {
-  0%   { filter: drop-shadow(0 0 6px #CC0000); }
-  50%  { filter: drop-shadow(0 0 14px #FF4444); }
-  100% { filter: drop-shadow(0 0 6px #CC0000); }
+@keyframes sharinganPulse {
+  0%, 100% { transform: scale(1);    filter: drop-shadow(0 0 6px #CC0000); }
+  50%       { transform: scale(1.2); filter: drop-shadow(0 0 14px #FF4444); }
 }
 
-/* Naruto subtitle badge */
+/* "Ninja Mode" subtitle */
 .logo::after {
-  content: '🍜 Ninja Mode';
+  content: '⚡ NINJA MODE ⚡';
   display: block;
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  color: var(--text-muted);
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--accent-bright);
   text-transform: uppercase;
-  margin-top: 2px;
+  margin-top: 4px;
+  text-shadow: 0 0 8px var(--accent);
 }
 
 /* ── Stat Cards ─────────────────────────────────────────────── */
 .stat-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 7px;
 }
 
 .stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  background: linear-gradient(135deg, #1e0e00, #160900);
+  border: 1px solid rgba(255, 107, 0, 0.22);
+  border-left: 3px solid var(--accent);
   border-radius: var(--border-radius);
-  padding: 10px 14px;
+  padding: 9px 12px 9px 14px;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  transition: border-color var(--transition-fast), background var(--transition-fast);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
   position: relative;
-  overflow: hidden;
-}
-
-/* Chakra line accent on left edge */
-.stat-card::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: linear-gradient(to bottom, var(--accent), transparent);
-  border-radius: 3px 0 0 3px;
-  opacity: 0;
-  transition: opacity var(--transition-fast);
-}
-
-.stat-card:hover::before { opacity: 1; }
-
-.stat-card.highlight {
-  border-color: rgba(255, 215, 0, 0.3);
-  box-shadow: 0 0 14px rgba(255, 215, 0, 0.15), inset 0 1px 0 rgba(255,255,255,0.04);
-}
-
-.stat-card.highlight::before {
-  background: linear-gradient(to bottom, #FFD700, transparent);
-  opacity: 1;
 }
 
 .stat-card:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border-glow);
+  border-color: rgba(255, 160, 64, 0.5);
+  box-shadow: 0 0 16px rgba(255, 107, 0, 0.25), inset 0 0 20px rgba(255, 107, 0, 0.04);
+}
+
+/* High score card gets gold treatment */
+.stat-card.highlight {
+  border-left-color: var(--neon-gold);
+  border-color: rgba(255, 215, 0, 0.3);
+  background: linear-gradient(135deg, #1e1200, #140c00);
+  box-shadow: 0 0 18px rgba(255, 215, 0, 0.15), inset 0 1px 0 rgba(255,215,0,0.06);
 }
 
 .stat-label {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 2.5px;
   color: var(--text-muted);
 }
 
 .stat-value {
   font-family: 'Orbitron', monospace;
   font-weight: 700;
-  font-size: 1.45rem;
+  font-size: 1.5rem;
   color: var(--text-primary);
   line-height: 1.1;
+  text-shadow: 0 0 20px rgba(255, 107, 0, 0.4);
 }
 
 .stat-small { font-size: 1.05rem; }
-.fps-card   { border-color: var(--border-subtle); }
+.fps-card { border-left-color: var(--neon-green); }
 
 /* ── Preview Boxes ──────────────────────────────────────────── */
 .preview-box {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  background: linear-gradient(135deg, #1a0a00, #100600);
+  border: 1px solid rgba(255, 107, 0, 0.22);
   border-radius: var(--border-radius);
   padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
 .preview-box:hover {
-  border-color: var(--border-glow);
-  box-shadow: 0 0 16px var(--accent-glow);
+  border-color: rgba(255, 160, 64, 0.5);
+  box-shadow: 0 0 20px rgba(255, 107, 0, 0.3);
 }
 
 .preview-label {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 2.5px;
   color: var(--text-muted);
   align-self: flex-start;
 }
@@ -248,22 +217,23 @@ body {
   width: 100%;
   max-width: 120px;
   height: auto;
+  border: 1px solid rgba(255, 107, 0, 0.15);
 }
 
 /* ── Controls Reference ─────────────────────────────────────── */
 .controls-ref {
-  background: var(--bg-card);
-  border: 1px solid var(--border-subtle);
+  background: linear-gradient(135deg, #1a0a00, #100600);
+  border: 1px solid rgba(255, 107, 0, 0.18);
   border-radius: var(--border-radius);
   padding: 12px 14px;
 }
 
 .controls-title {
   display: block;
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 2.5px;
   color: var(--text-muted);
   margin-bottom: 8px;
 }
@@ -273,22 +243,17 @@ body {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  font-size: 0.76rem;
+  font-size: 0.75rem;
   color: var(--text-secondary);
 }
-
-.controls-list li {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
+.controls-list li { display: flex; align-items: center; gap: 6px; }
 
 kbd {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--bg-card-hover);
-  border: 1px solid rgba(255,107,0,0.25);
+  background: #2a1200;
+  border: 1px solid rgba(255, 107, 0, 0.35);
   border-radius: 4px;
   padding: 1px 5px;
   font-family: 'Orbitron', monospace;
@@ -296,46 +261,49 @@ kbd {
   color: var(--accent-bright);
   min-width: 22px;
   line-height: 1.5;
-  box-shadow: 0 1px 0 rgba(255,107,0,0.2);
+  box-shadow: 0 2px 0 rgba(255,107,0,0.3);
 }
 
 /* ── Combo Display ──────────────────────────────────────────── */
 .combo {
-  background: linear-gradient(135deg, #CC0000, #FF6B00);
+  background: linear-gradient(135deg, #8B0000, #FF4500, #FF8C00);
+  background-size: 200% auto;
+  animation: comboGradient 1s linear infinite, comboPulse 0.5s ease;
   border-radius: var(--border-radius);
   padding: 12px;
   text-align: center;
   font-family: 'Orbitron', monospace;
   font-weight: 900;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   color: #fff;
   letter-spacing: 2px;
-  box-shadow: 0 0 24px rgba(204, 0, 0, 0.7);
-  animation: comboPulse 0.5s ease;
-  text-shadow: 0 0 10px rgba(255,200,0,0.8);
+  box-shadow: 0 0 30px rgba(255, 100, 0, 0.8), 0 0 60px rgba(255, 50, 0, 0.4);
+  text-shadow: 0 0 10px rgba(255,220,0,0.8);
+  border: 1px solid rgba(255,200,0,0.4);
+}
+
+@keyframes comboGradient {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
 }
 
 .combo.hidden { display: none; }
-
 #combo-count {
-  font-size: 1.6rem;
+  font-size: 1.8rem;
   display: block;
   color: #FFD700;
-  filter: drop-shadow(0 0 6px #FFD700);
+  filter: drop-shadow(0 0 8px #FFD700);
+  text-shadow: none;
 }
 
 @keyframes comboPulse {
-  0%   { transform: scale(0.7) rotate(-5deg); opacity: 0; }
-  60%  { transform: scale(1.12) rotate(2deg); }
-  100% { transform: scale(1) rotate(0deg);    opacity: 1; }
+  0%   { transform: scale(0.6) rotate(-8deg); opacity: 0; }
+  60%  { transform: scale(1.15) rotate(3deg); }
+  100% { transform: scale(1)   rotate(0deg); opacity: 1; }
 }
 
 /* ── Buttons ─────────────────────────────────────────────────── */
-.btn-group {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-}
+.btn-group { display: flex; flex-direction: column; gap: 7px; }
 
 .btn {
   display: inline-flex;
@@ -346,67 +314,62 @@ kbd {
   border-radius: 8px;
   padding: 9px 14px;
   font-family: 'Inter', sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.78rem;
   cursor: pointer;
-  transition: transform var(--transition-fast),
-              box-shadow var(--transition-fast),
-              background var(--transition-fast),
-              filter var(--transition-fast);
   user-select: none;
+  transition: transform 0.1s ease, box-shadow 0.15s ease, filter 0.15s ease;
   position: relative;
   overflow: hidden;
 }
+.btn:active { transform: scale(0.94); }
 
-/* Chakra shimmer on hover */
+/* Fire shimmer on hover */
 .btn::after {
   content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
-  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+  transform: translateX(-150%);
   transition: transform 0.4s ease;
 }
-.btn:hover::after { transform: translateX(100%); }
-
-.btn:active { transform: scale(0.95); }
+.btn:hover::after { transform: translateX(150%); }
 
 .btn-primary {
-  background: linear-gradient(135deg, #FF6B00, #FF9A40);
+  background: linear-gradient(135deg, #CC4400, #FF6B00, #FF9A00);
   color: #fff;
-  box-shadow: 0 4px 16px rgba(255,107,0,0.4);
-  text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 20px rgba(255,107,0,0.5);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255,200,0,0.3);
 }
-
 .btn-primary:hover {
-  box-shadow: 0 6px 22px rgba(255,107,0,0.6);
-  filter: brightness(1.1);
+  box-shadow: 0 6px 28px rgba(255,120,0,0.7);
+  filter: brightness(1.12);
 }
 
 .btn-secondary {
-  background: var(--bg-card);
+  background: linear-gradient(135deg, #1e0e00, #2a1400);
   color: var(--text-secondary);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid rgba(255,107,0,0.28);
 }
-
 .btn-secondary:hover {
-  background: var(--bg-card-hover);
-  border-color: var(--border-glow);
+  background: linear-gradient(135deg, #2e1800, #3a2000);
+  border-color: rgba(255, 150, 0, 0.6);
   color: var(--text-primary);
-  box-shadow: 0 0 12px var(--accent-glow);
+  box-shadow: 0 0 16px rgba(255, 107, 0, 0.35);
 }
 
 .btn-accent {
-  background: linear-gradient(135deg, #CC0000, #FF6B00);
+  background: linear-gradient(135deg, #8B0000, #CC0000, #FF4400);
   color: #fff;
-  box-shadow: 0 4px 16px rgba(204,0,0,0.4);
+  box-shadow: 0 4px 18px rgba(204,0,0,0.5);
+  border: 1px solid rgba(255,100,0,0.3);
 }
-
-.btn-accent:hover { filter: brightness(1.1); }
+.btn-accent:hover { filter: brightness(1.12); }
 
 .mt-16 { margin-top: 16px; }
 
-/* ── Game Canvas Area ────────────────────────────────────────── */
+/* ── Game Canvas ─────────────────────────────────────────────── */
 .game-area {
   display: flex;
   align-items: center;
@@ -417,13 +380,28 @@ kbd {
 #game-canvas {
   display: block;
   border-radius: var(--border-radius-lg);
-  box-shadow:
-    0 0 0 2px rgba(255,107,0,0.5),
-    0 0 0 4px rgba(255,107,0,0.15),
-    0 0 50px rgba(255,107,0,0.25),
-    0 20px 60px rgba(0,0,0,0.9);
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  animation: canvasFire 2s ease-in-out infinite;
+}
+
+@keyframes canvasFire {
+  0%, 100% {
+    box-shadow:
+      0 0 0 3px rgba(255, 107,  0, 0.7),
+      0 0 0 6px rgba(255, 107,  0, 0.2),
+      0 0  40px rgba(255,  80,  0, 0.4),
+      0 0  80px rgba(200,  40,  0, 0.2),
+      0 24px 60px rgba(0, 0, 0, 0.9);
+  }
+  50% {
+    box-shadow:
+      0 0 0 3px rgba(255, 200,  0, 0.9),
+      0 0 0 6px rgba(255, 150,  0, 0.3),
+      0 0  60px rgba(255, 120,  0, 0.6),
+      0 0 100px rgba(255,  60,  0, 0.3),
+      0 24px 60px rgba(0, 0, 0, 0.9);
+  }
 }
 
 /* ── Overlays ────────────────────────────────────────────────── */
@@ -434,12 +412,11 @@ kbd {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(6, 3, 0, 0.82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(4, 2, 0, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   animation: overlayIn 0.25s ease;
 }
-
 .overlay.hidden { display: none; }
 
 @keyframes overlayIn {
@@ -448,53 +425,64 @@ kbd {
 }
 
 .overlay-card {
-  background: var(--bg-panel);
-  border: 1px solid rgba(255,107,0,0.4);
+  background: linear-gradient(160deg, #180c00, #0e0600);
+  border: 1px solid rgba(255, 120, 0, 0.45);
   border-radius: var(--border-radius-lg);
-  padding: 40px 48px;
+  padding: 0 48px 40px;
   text-align: center;
-  min-width: 320px;
+  min-width: 340px;
   max-width: 90vw;
   box-shadow:
-    0 0 0 1px rgba(255,107,0,0.1),
-    0 0 60px rgba(255,107,0,0.3),
-    0 30px 80px rgba(0,0,0,0.7);
-  animation: cardIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
+    0 0 0 1px rgba(255,107,0,0.12),
+    0 0  60px rgba(255, 80,  0, 0.35),
+    0 0 120px rgba(200, 40,  0, 0.15),
+    0 30px 80px rgba(0, 0, 0, 0.8);
+  animation: cardIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: hidden;
 }
 
-/* Scroll-paper texture top bar */
+/* Orange fire ticker at top of overlay card */
 .overlay-card::before {
-  content: '🍜 ⚡ 🌀 🔥 🍃 👁️ 📜 🍜 ⚡ 🌀 🔥';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  padding: 6px;
-  font-size: 0.9rem;
-  background: linear-gradient(90deg, #CC0000, #FF6B00, #FFD700, #FF6B00, #CC0000);
+  content: '🔥 🍜 ⚡ 🌀 👁️ 🍃 📜 🔥 🍜 ⚡ 🌀 👁️';
+  display: block;
+  width: 100%;
+  padding: 8px 0;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #8B0000, #FF4500, #FF8C00, #FF4500, #8B0000);
+  background-size: 200%;
+  color: transparent;
+  letter-spacing: 6px;
   text-align: center;
-  letter-spacing: 4px;
-  line-height: 1;
-  overflow: hidden;
-  white-space: nowrap;
+  margin: 0 -48px 24px;
+  border-bottom: 1px solid rgba(255, 107, 0, 0.3);
+  animation: tickerScroll 4s linear infinite;
+  /* show the emojis, not transparent */
+  -webkit-text-fill-color: initial;
+  color: #fff;
+}
+
+@keyframes tickerScroll {
+  0%   { background-position: 0%   center; }
+  100% { background-position: 200% center; }
 }
 
 @keyframes cardIn {
-  from { transform: scale(0.8) translateY(24px) rotate(-3deg); opacity: 0; }
-  to   { transform: scale(1)   translateY(0)    rotate(0deg);  opacity: 1; }
+  from { transform: scale(0.78) translateY(30px); opacity: 0; }
+  to   { transform: scale(1)    translateY(0);    opacity: 1; }
 }
 
 .overlay-title {
   font-family: 'Orbitron', monospace;
   font-weight: 900;
-  font-size: 1.9rem;
-  margin-top: 24px;
+  font-size: 2rem;
   margin-bottom: 10px;
-  background: linear-gradient(135deg, #FF9A40, #FFD700, #FF6B00);
+  background: linear-gradient(135deg, #FF6B00, #FFD700, #FF4500);
+  background-size: 200%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 8px rgba(255,150,0,0.6));
+  animation: fireText 2s linear infinite;
+  filter: drop-shadow(0 0 10px rgba(255,150,0,0.7));
 }
 
 .overlay-sub {
@@ -513,8 +501,8 @@ kbd {
 }
 
 .name-input {
-  background: var(--bg-card);
-  border: 1px solid rgba(255,107,0,0.25);
+  background: #1a0a00;
+  border: 1px solid rgba(255,107,0,0.35);
   border-radius: 8px;
   padding: 10px 14px;
   color: var(--text-primary);
@@ -524,74 +512,50 @@ kbd {
   outline: none;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
-
 .name-input::placeholder { color: var(--text-muted); }
-
 .name-input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 2px var(--accent-glow);
+  box-shadow: 0 0 0 3px rgba(255,107,0,0.3);
 }
 
-.feedback-text {
-  font-size: 0.85rem;
-  color: var(--neon-green);
-  margin-top: 4px;
-}
+.feedback-text { font-size: 0.85rem; color: var(--neon-green); margin-top: 4px; }
 .feedback-text.error  { color: #f87171; }
 .feedback-text.hidden { display: none; }
 
 /* ── Leaderboard ─────────────────────────────────────────────── */
-.leaderboard-card { min-width: 400px; }
+.leaderboard-card { min-width: 420px; }
 
-.lb-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.88rem;
-  margin-top: 16px;
-}
+.lb-table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin-top: 16px; }
 
 .lb-table th {
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 2px;
   color: var(--text-muted);
   padding: 6px 10px;
   text-align: left;
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid rgba(255,107,0,0.2);
 }
 
 .lb-table td {
   padding: 8px 10px;
   color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-subtle);
+  border-bottom: 1px solid rgba(255,107,0,0.08);
 }
 
-.lb-table tr:first-child td  { color: #FFD700; font-weight: 700; }
+.lb-table tr:first-child td  { color: #FFD700; font-weight: 700; text-shadow: 0 0 8px #FFD700; }
 .lb-table tr:nth-child(2) td { color: var(--text-primary); }
 .lb-table tr:nth-child(3) td { color: var(--accent-bright); }
 
-.lb-empty {
-  text-align: center;
-  color: var(--text-muted);
-  font-style: italic;
-  padding: 24px !important;
-}
+.lb-empty { text-align: center; color: var(--text-muted); font-style: italic; padding: 24px !important; }
 
 /* ── Responsive ─────────────────────────────────────────────── */
 @media (max-width: 900px) {
-  #app {
-    flex-direction: column;
-    align-items: center;
-    overflow-y: auto;
-    overflow-x: hidden;
-    padding: 12px;
-  }
+  #app { flex-direction: column; align-items: center; overflow-y: auto; overflow-x: hidden; padding: 12px; }
   body { overflow: auto; }
   .panel { width: 100%; max-width: 400px; flex-direction: row; flex-wrap: wrap; }
-  .panel-left  { order: 2; }
-  .panel-right { order: 3; }
-  .game-area   { order: 1; }
+  .panel-left { order: 2; } .panel-right { order: 3; } .game-area { order: 1; }
   .stat-group { flex-direction: row; flex-wrap: wrap; }
   .stat-card  { flex: 1; min-width: 80px; }
   .preview-box { flex: 1; min-width: 120px; }
@@ -601,28 +565,19 @@ kbd {
 }
 
 /* ── Scrollbar ──────────────────────────────────────────────── */
-::-webkit-scrollbar        { width: 6px; }
-::-webkit-scrollbar-track  { background: var(--bg-deep); }
-::-webkit-scrollbar-thumb  { background: rgba(255,107,0,0.4); border-radius: 3px; }
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: #060200; }
+::-webkit-scrollbar-thumb { background: rgba(255,107,0,0.45); border-radius: 3px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-/* ── Selection ──────────────────────────────────────────────── */
 ::selection { background: var(--accent); color: #fff; }
 
-/* ── Utility ─────────────────────────────────────────────────── */
 .hidden { display: none !important; }
 
-/* ── Score pop (applied via JS) ─────────────────────────────── */
+/* ── Score pop ──────────────────────────────────────────────── */
 @keyframes scorePop {
   0%   { transform: scale(1); }
-  30%  { transform: scale(1.35); color: #FFD700; text-shadow: 0 0 12px #FFD700; }
+  30%  { transform: scale(1.4); color: #FFD700; text-shadow: 0 0 20px #FFD700; }
   100% { transform: scale(1); }
 }
 .score-pop { animation: scorePop 0.35s ease; }
-
-/* ── Fire shimmer on canvas border ─────────────────────────── */
-@keyframes fireBorder {
-  0%, 100% { box-shadow: 0 0 0 2px rgba(255,107,0,0.5), 0 0 50px rgba(255,107,0,0.25), 0 20px 60px rgba(0,0,0,0.9); }
-  50%       { box-shadow: 0 0 0 2px rgba(255,200,0,0.7), 0 0 70px rgba(255,150,0,0.45), 0 20px 60px rgba(0,0,0,0.9); }
-}
-#game-canvas { animation: fireBorder 2.5s ease-in-out infinite; }
